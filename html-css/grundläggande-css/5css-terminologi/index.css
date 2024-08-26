@@ -1,0 +1,14 @@
+body {
+    background-color: #ccc;
+    color: #65432f;
+    font-size: 150%;
+}
+
+h1 {
+    background-color: lightskyblue;
+    transition: transform 2s;
+}
+
+h1:hover {
+    transform: rotate(-.01turn);
+}
