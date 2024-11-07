@@ -1,0 +1,20 @@
+[
+    {
+        "userName": "Bob",
+        "password": "secret",
+        "boolean": true,
+        "Number": 12345
+    },
+    {
+        "userName": "Bob",
+        "password": "secret",
+        "boolean": true,
+        "Number": 12345
+    },
+    {
+        "userName": "Bob",
+        "password": "secret",
+        "boolean": true,
+        "Number": 12345
+    }
+]
