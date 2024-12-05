@@ -1,8 +1,7 @@
+import * as cities from "./cities.js";
+import { getAllEquipment, getSpecificEquipment } from "./equipment.js";
 import Observer from "./observer.js";
 import * as utils from "./utils.js"
-
-const myHeaders = new Headers();
-myHeaders.append("Accept", "application/json");
 
 const cardOverlay = document.querySelector("#card-overlay")
 cardOverlay.style.display = "none"
@@ -14,6 +13,7 @@ const infoIndex = document.querySelector("#index")
 const infoName = document.querySelector("#name")
 const infoTest = document.querySelector("#test")
 
+
 equipForm.addEventListener("submit", async(e) => {
   e.preventDefault()
   let data = new FormData(equipForm)
@@ -21,21 +21,28 @@ equipForm.addEventListener("submit", async(e) => {
   await loadEquipment(data)
 })
 
-const requestOptions = {
-  method: "GET",
-  headers: myHeaders,
-  redirect: "follow"
-};
-
 let characterEquip = new Observer([])
 characterEquip.subscribe((newvalue) => {
+  console.log("Observer ping!")
   updateEquipmentList(newvalue)
+  saveToAvancera(newvalue)
+  console.log(newvalue)
+  console.log(newvalue)
 })
 
-let equipment = await fetch("https://www.dnd5eapi.co/api/equipment", requestOptions)
-  .then((response) => response.json())
-  .then((result) => {return result.results})
-  .catch((error) => console.error(error));
+let equipment = await getAllEquipment()
+
+let alreadySaved = await cities.get("0")
+if(alreadySaved && alreadySaved.length > 0){
+  characterEquip.value = characterEquip.value.concat(alreadySaved)
+}
+console.log("loading")
+console.log(equipment)
+console.log(characterEquip)
+console.log("alreadysavedload")
+console.log(alreadySaved)
+
+updateEquipmentList(alreadySaved)
 
 equipment.forEach(equip => {
   let opt = document.createElement("option")
@@ -44,18 +51,14 @@ equipment.forEach(equip => {
   equipmentList.appendChild(opt)
 });
 
-console.log(equipment)
 
 async function loadEquipment(data){
-  let equipment = await fetch(`https://www.dnd5eapi.co/api/equipment/${data.get("equipment")}`)
-  .then((response) => response.json())
-  .then((result) => {return result})
-  .catch((error) => console.error(error));
-  console.log(equipment)
-  console.log(characterEquip.value)
-  console.log("setting equipment into observable")
+  let equipment = await getSpecificEquipment(data.get("equipment"))
+  // console.log(equipment)
+  // console.log(characterEquip.value)
+  // console.log("setting equipment into observable")
   characterEquip.value = characterEquip.value.concat([equipment])
-  console.log(characterEquip.value)
+  // console.log(characterEquip.value)
 }
 
 function updateEquipmentList(list){
@@ -68,4 +71,8 @@ function updateEquipmentList(list){
     console.log(equip.name)
     equipmentActualList.appendChild(e)
   })
+}
+
+function saveToAvancera(equipment){
+  cities.post(equipment)
 }
