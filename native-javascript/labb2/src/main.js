@@ -6,9 +6,11 @@ import * as utils from "./utils.js"
 
 const Form = document.querySelector("#character-form")
 const charactersList = document.querySelector("#characters")
+
 // new Character elements
 const newCharacterOverlay = document.querySelector("#new-character-overlay")
 const newCharacterForm = document.querySelector("#new-character-form")
+const characterDelete = document.querySelector("#character-delete")
 
 const classesList = document.querySelector("#class")
 const equipmentList = document.querySelector("#equipment")
@@ -55,12 +57,23 @@ Form.addEventListener("submit", async(e) => {
   await saveCharacter(data)
 })
 
+characterDelete.addEventListener("click", deleteChar)
+
 // initialize the characters array and the selectedcharacter
 let characters = []
 let selectedCharacter = 0
 
 // eventlistener for the characters list, if we change then switch character
-charactersList.addEventListener("change", switchCharacter)
+charactersList.addEventListener("change", async (e) => {
+  console.log("charList Change")
+  await switchCharacter()
+})
+
+// updates the local character data on form change
+Form.addEventListener("change", (e) => {
+  let data = new FormData(Form)
+  setCharacter(data)
+})
 
 // if the user is logged in (which they should be?)
 if(user){
@@ -75,10 +88,12 @@ if(user){
     
   } else {
     // else create a new empty default one
-    let character = new Character()
-    character.setName("Default")
-    characters.push(character)
-    refreshCharacter()
+    console.log("create new")
+    listCharacters()
+    charactersList.value = "new"
+    await switchCharacter()
+    console.log("hmmm")
+
   }
   listCharacters()
 }
@@ -126,46 +141,34 @@ function updateEquipmentList(list){
 // lists out the characters in the character selector
 function listCharacters(){
   utils.removeChildren(charactersList)
-  characters.forEach(char => {
-    console.log(char)
-    let opt = document.createElement("option")
-    opt.value = char.id
-    opt.textContent = char.name
-    charactersList.appendChild(opt)
-  })
+  console.log("listing")
+  console.log(characters)
+  if(characters.length > 0){
+    characters.forEach(char => {
+      let opt = document.createElement("option")
+      opt.value = char.id
+      opt.textContent = char.name
+      charactersList.appendChild(opt)
+      charactersList.value = characters[selectedCharacter].id
+    })
+  }
   let opt = document.createElement("option")
   opt.value = "new"
   opt.textContent = "New Character"
   charactersList.appendChild(opt)
-  charactersList.value = characters[selectedCharacter].id
 }
 
 // switches the character by getting the characters index from its id,
 // which solves the problem of having characters with the same name?
-function switchCharacter(){
-  console.log(charactersList)
+async function switchCharacter(){
+  console.log("switch start")
+  console.log(charactersList.value)
   if(charactersList.value === "new"){ // if we choose the "new", option then initiate a new character creation
     console.log("Adding character")
     newCharacterOverlay.style.display = "block"
-    async function waitTillCharacterCreated(){
-      await new Promise((resolve) => {
-        newCharacterForm.addEventListener("submit", (e) => {
-          e.preventDefault()
-          let data = new FormData(newCharacterForm)
-          let character = new Character()
-          character.setName(data.get("new-character-name"))
-          console.log(character)
-          characters.push(character)
-          console.log(characters)
-          listCharacters()
-          charactersList.value = character.id
-          switchCharacter()
-          newCharacterOverlay.style.display = "none"
-          resolve()
-        })
-      })
-    }
-    waitTillCharacterCreated()
+    await waitTillCharacterCreated()
+    console.log("creation done")
+    switchCharacter()
   } else{
     console.log("Switching characters")
     let id = +charactersList.value
@@ -173,21 +176,56 @@ function switchCharacter(){
       return char.id === id
     })
     selectedCharacter = index
+    refreshCharacter(characters[selectedCharacter])
   }
-  console.log(selectedCharacter)
-  refreshCharacter(characters[selectedCharacter])
+  console.log("selected: " + selectedCharacter)
+}
+
+async function waitTillCharacterCreated(){
+  console.log("starting character creation")
+  await new Promise((resolve) => {
+    console.log("promise made")
+    console.log(this)
+    function addCharacter(event){
+      event.preventDefault()
+      let data = new FormData(newCharacterForm)
+      let character = new Character()
+      character.setName(data.get("new-character-name"))
+      character.setClass("barbarian")
+      console.log(character)
+      characters.push(character)
+      console.log("adding character1")
+      console.log(JSON.stringify(characters))
+      listCharacters()
+      charactersList.value = character.id
+      console.log("list Value: " + charactersList.value)
+      
+      newCharacterOverlay.style.display = "none"
+      resolve()
+      console.log("resolved")
+      newCharacterForm.removeEventListener("submit", addCharacter)
+    }
+    newCharacterForm.addEventListener("submit", addCharacter)
+  })
 }
 
 // !empty function?
-function addCharacter(){
-  
+
+
+function deleteChar(){
+  cities.del(user, characters[selectedCharacter].id)
+  characters.splice(selectedCharacter, 1)
+  selectedCharacter -= 1
+  if(selectedCharacter < 0) { selectedCharacter = 0 }
+  if(characters.length === 0){
+    console.log("no characters left")
+    charactersList.value = "new"
+    console.log(charactersList.value)
+  }
+  switchCharacter()
+  console.log(selectedCharacter)
 }
 
-// updates the local character data on form change
-Form.addEventListener("change", (e) => {
-  let data = new FormData(Form)
-  setCharacter(data)
-})
 function setCharacter(data){
   console.log("setting")
   characters[selectedCharacter].setName(data.get("name"))
@@ -210,6 +248,7 @@ async function loadCharacters(oldCharacters){
 
 // visually refreshes the forms data with the sent in char
 function refreshCharacter(){
+  console.log("Refreshing")
   //console.log(characters[selectedCharacter])
   Form.name.value = characters[selectedCharacter].name
 
@@ -222,7 +261,7 @@ function refreshCharacter(){
 
 // save selected character to cities api
 // ! doesnt save all characters
-async function saveCharacter(data){
+async function saveCharacter(){
   //characters[selectedCharacter].setName(data.get("name"))
   //characters[selectedCharacter].setClass(data.get("class"))
   //characters[selectedCharacter].setLevel(data.get("level"))

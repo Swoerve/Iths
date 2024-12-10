@@ -36,7 +36,7 @@ export async function post(data, user){
 /**
  * Fetches data of a user and parses it from stringified binary to an array of objects
  * @param {string} user user to fetch data of
- * @returns {Array} data
+ * @returns {Promsie<array>} data
  */
 export async function get(user = "0"){
   let result = await fetch(`https://avancera.app/cities/?name=CreatorApp${user}|`, {
@@ -113,4 +113,20 @@ async function patch(data, user, id){
   .then(result => {
     console.log(result)
   })
+}
+
+export async function del(user, id){
+  let cID = await getID(id, user)
+  console.log("cid")
+  console.log(cID)
+  if(cID && cID.length > 0){
+    fetch(`https://avancera.app/cities/${cID}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE'
+      }).then(response => response).then(result => console.log(result))
+  } else {
+    console.log("character isnt in cities, only deleting localy")
+  }
 }

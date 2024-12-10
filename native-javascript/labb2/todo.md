@@ -1,5 +1,5 @@
-make each user have access to a character list with multiple characters
-make it possible to add and remove characters
+make each user have access to a character list with multiple characters / check
+make it possible to add and remove characters / check
 more additions of things from dnd
 make a chart for stats/skills
 MAYBE a overlay chart for equipment / spell stats?
