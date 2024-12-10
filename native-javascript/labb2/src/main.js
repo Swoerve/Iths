@@ -213,17 +213,21 @@ async function waitTillCharacterCreated(){
 
 
 function deleteChar(){
+  console.log("deleting")
   cities.del(user, characters[selectedCharacter].id)
   characters.splice(selectedCharacter, 1)
-  selectedCharacter -= 1
+  selectedCharacter = selectedCharacter - 1
   if(selectedCharacter < 0) { selectedCharacter = 0 }
   if(characters.length === 0){
     console.log("no characters left")
     charactersList.value = "new"
     console.log(charactersList.value)
   }
+  console.log("Selected: " + selectedCharacter)
+  charactersList.value = characters[selectedCharacter].id
   switchCharacter()
-  console.log(selectedCharacter)
+  listCharacters()
+  console.log("Selected: " + selectedCharacter)
 }
 
 function setCharacter(data){
