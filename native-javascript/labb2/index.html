@@ -8,24 +8,54 @@
   <title>Document</title>
 </head>
 <body>
-  <div id="card-overlay">
-    <div id="equipment-card" class="card">
-      <h3 id="equipment-name">Abacus</h3>
-      <p id="equipment-index">Abacus</p>
+  <div id="overlay">
+    <div id="user-card">
+      <form action="" id="user-form">
+        <input type="text" name="user" id="user">
+        <input type="submit" value="SignIn">
+      </form>
     </div>
   </div>
-  <form id="equipment-form">
-    <label for="equipment">Choose an Equipment</label>
-    <select name="equipment" id="equipment" class="form-select">
+  <div id="new-character-overlay">
+    <div id="new-character-card">
+      <form action="" id="new-character-form">
+        <input type="text" name="new-character-name" id="new-character-name">
+        <input type="submit" value="Create">
+      </form>
+    </div>
+  </div>
+  <div>
+    <select name="characters" id="characters"></select>
+  </div>
+  <form id="character-form">
+    <div class="input-container">
+      <label for="name">Name</label>
+      <input class="border-2 border-slate-600" type="text" name="name" id="name" placeholder="Name">
+    </div>
+    <div class="input-container">
+      <label for="class">Class</label>
+      <select name="class" id="class">
 
-    </select>
-    <br><br>
-    <input type="submit" value="Submit">
+      </select>
+      <input type="number" name="level" id="level" value="0">
+    </div>
+    <div class="input-container">
+      <label for="equipment">Equipment</label>
+      <select name="equipment" id="equipment" class="form-select">
+  
+      </select>
+      <button type="button" id="equipment-add">Add</button>
+    </div>
+    <div class="input-container-column">
+      <p style="margin: 0;">Inventory</p>
+      <ul id="equipment-list">
+        
+      </ul>
+    </div>
+
+    <input type="submit" value="Save">
   </form>
   <br><br>
-  <ul id="equipment-list">
-
-  </ul>
   <script type="module" src="./src/main.js" defer></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
 </body>

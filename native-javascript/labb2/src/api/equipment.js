@@ -1,10 +1,4 @@
 
-// different document elements that MIGHT be needed
-const overlay = document.querySelector("#card-overlay")
-const eCard = document.querySelector("#equipment-card")
-const eCardName = document.querySelector("#equipment-name")
-const eCardIndex = document.querySelector("#equipment-index")
-
 // headers for the api
 const myHeaders = new Headers();
 myHeaders.append("Accept", "application/json");
@@ -41,4 +35,17 @@ export async function getSpecificEquipment(equipment){
     .catch((error) => console.error(error))
     
   return equip
+}
+
+/**
+ * Fetch all the classes from the dnd5e srd api
+ * @returns class
+ */
+export async function getAllClasses(){
+  let classes = await fetch("https://www.dnd5eapi.co/api/classes", requestOptions)
+  .then((response) => response.json())
+  .then((result) => result.results)
+  .catch((error) => console.error(error))
+
+  return classes
 }
