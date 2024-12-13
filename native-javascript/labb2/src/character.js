@@ -3,6 +3,7 @@ export class Character {
   id = 0
   name = ""
   clas = "" // class, cant use class as name so using clas instead
+  race = ""
   level = 0
   inventory = []
 
@@ -24,6 +25,14 @@ export class Character {
    */
   setClass(newClass){
     this.clas = newClass
+  }
+
+  /**
+   * Sets the race of the character
+   * @param {string} newRace
+   */
+  setRace(newRace){
+    this.race = newRace
   }
 
   /**
@@ -61,6 +70,7 @@ export class Character {
     char.id = object.id
     char.setName(object.name)
     char.setClass(object.clas)
+    char.setRace(object.race)
     char.setLevel(object.level)
     char.inventory = object.inventory
     return char

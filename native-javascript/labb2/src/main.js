@@ -2,7 +2,9 @@ import { Character } from "./character.js";
 import * as cities from "./cities.js";
 import * as dnd from "./api/equipment.js";
 import * as utils from "./utils.js"
+import { loadFromLoSto } from "./session-storage.js";
 
+const logoutButton = document.querySelector("#logout")
 
 const Form = document.querySelector("#character-form")
 const charactersList = document.querySelector("#characters")
@@ -13,6 +15,7 @@ const newCharacterForm = document.querySelector("#new-character-form")
 const characterDelete = document.querySelector("#character-delete")
 
 const classesList = document.querySelector("#class")
+const raceList = document.querySelector("#race")
 const equipmentList = document.querySelector("#equipment")
 const equipmentAdd = document.querySelector("#equipment-add")
 const equipmentActualList = document.querySelector("#equipment-list")
@@ -21,23 +24,37 @@ let user = ""
 
 // TODO make sure the user cant enter an empty username... somehow
 // if no user is logged in then ask to login with a simple username
-if(!user){
-  document.getElementById("overlay").style.display = "block"
-  let userForm = document.querySelector("#user-form")
-  async function waitTillSignedIn(){
-    await new Promise((resolve) => {
-      userForm.addEventListener("submit", (e) => {
-        e.preventDefault()
-        let data = new FormData(userForm)
-        user = data.get("user")
-        console.log(`${user} signed in`)
-        document.getElementById("overlay").style.display = "none"
-        resolve()
-      })
-    })
-  }
-  await waitTillSignedIn() // this is used to stop the rest of the site to keep loading until we have a user
+let loadedUser = loadFromLoSto("user")
+if(loadedUser){
+  console.log("user in localstorage")
+  console.log(loadedUser)
+  user = loadedUser
 }
+
+if(!user){
+  utils.movePage("index.html")
+  // document.getElementById("overlay").style.display = "block"
+  // let userForm = document.querySelector("#user-form")
+  // async function waitTillSignedIn(){
+  //   await new Promise((resolve) => {
+  //     userForm.addEventListener("submit", (e) => {
+  //       e.preventDefault()
+  //       let data = new FormData(userForm)
+  //       user = data.get("user")
+  //       console.log(`${user} signed in`)
+  //       document.getElementById("overlay").style.display = "none"
+  //       resolve()
+  //     })
+  //   })
+  // }
+  // await waitTillSignedIn() // this is used to stop the rest of the site to keep loading until we have a user
+  // saveToLoSto("user", user)
+}
+
+logoutButton.addEventListener("click", (e) => {
+  localStorage.removeItem("user")
+  utils.movePage("index.html")
+})
 
 // eventlistener for adding equipment
 equipmentAdd.addEventListener("click", async(e) => {
@@ -75,6 +92,38 @@ Form.addEventListener("change", (e) => {
   setCharacter(data)
 })
 
+
+// load in all equipment from dnd api
+let equipment = await dnd.getAllEquipment()
+// append equipment api list to visual select in form
+equipment.forEach(equip => {
+  let opt = document.createElement("option")
+  opt.value = equip.index
+  opt.textContent = equip.name
+  equipmentList.appendChild(opt)
+})
+
+// load in all the classes from dnd api
+let classes = await dnd.getAllClasses()
+// append equipment api list to visual select in form
+classes.forEach(clas => {
+  let opt = document.createElement("option")
+  opt.value = clas.index
+  opt.textContent = clas.name
+  classesList.appendChild(opt)
+})
+
+// load in all the races from dnd api
+let races = await dnd.getAllRaces()
+// append equipment api list to visual select in form
+races.forEach(race => {
+  let opt = document.createElement("option")
+  opt.value = race.index
+  opt.textContent = race.name
+  raceList.appendChild(opt)
+})
+
+
 // if the user is logged in (which they should be?)
 if(user){
   // check if the user has saved characters in cities
@@ -97,26 +146,6 @@ if(user){
   }
   listCharacters()
 }
-
-// load in all equipment from dnd api
-let equipment = await dnd.getAllEquipment()
-// append equipment api list to visual select in form
-equipment.forEach(equip => {
-  let opt = document.createElement("option")
-  opt.value = equip.index
-  opt.textContent = equip.name
-  equipmentList.appendChild(opt)
-})
-
-// load in all the classes from dnd api
-let classes = await dnd.getAllClasses()
-// append equipment api list to visual select in form
-classes.forEach(clas => {
-  let opt = document.createElement("option")
-  opt.value = clas.index
-  opt.textContent = clas.name
-  classesList.appendChild(opt)
-})
 
 // updates the visual inventory list
 function updateEquipmentList(list){
@@ -234,6 +263,7 @@ function setCharacter(data){
   console.log("setting")
   characters[selectedCharacter].setName(data.get("name"))
   characters[selectedCharacter].setClass(data.get("class"))
+  characters[selectedCharacter].setRace(data.get("race"))
   characters[selectedCharacter].setLevel(data.get("level"))
   console.log(characters)
   listCharacters()
@@ -257,7 +287,9 @@ function refreshCharacter(){
   Form.name.value = characters[selectedCharacter].name
 
   characters[selectedCharacter].clas ? Form.class.value = characters[selectedCharacter].clas : Form.class.value = "Barbarian"
-
+  console.log(characters[selectedCharacter].race)
+  console.log(Boolean(characters[selectedCharacter].race))
+  characters[selectedCharacter].race ? Form.race.value = characters[selectedCharacter].race : Form.race.value = "Dragonborn"
   Form.level.value = characters[selectedCharacter].level
 
   updateEquipmentList(characters[selectedCharacter].inventory)

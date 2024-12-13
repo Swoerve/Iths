@@ -46,6 +46,19 @@ export async function getAllClasses(){
   .then((response) => response.json())
   .then((result) => result.results)
   .catch((error) => console.error(error))
+  console.log("classes loaded")
+  return classes
+}
+
+/**
+ * Fetch all the classes from the dnd5e srd api
+ * @returns class
+ */
+export async function getAllRaces(){
+  let classes = await fetch("https://www.dnd5eapi.co/api/races", requestOptions)
+  .then((response) => response.json())
+  .then((result) => result.results)
+  .catch((error) => console.error(error))
 
   return classes
 }
