@@ -4,6 +4,7 @@ import * as dnd from "./api/equipment.js";
 import * as utils from "./utils.js"
 import { loadFromLoSto } from "./session-storage.js";
 
+
 const logoutButton = document.querySelector("#logout")
 
 const Form = document.querySelector("#character-form")
@@ -21,6 +22,8 @@ const equipmentAdd = document.querySelector("#equipment-add")
 const equipmentActualList = document.querySelector("#equipment-list")
 
 const abilityScoreList = document.querySelector("#ability-scores")
+const abilityChart = document.querySelector("#ability-chart")
+let chart = null
 
 let user = ""
 
@@ -141,6 +144,7 @@ abilityScores.forEach(score => {
 
   abilityScoreList.appendChild(li)
 })
+
 
 
 // if the user is logged in (which they should be?)
@@ -294,6 +298,7 @@ function setCharacter(data){
   }
   characters[selectedCharacter].setScores(newScores)
   console.log(characters)
+  displayAbilityChart()
   listCharacters()
 }
 
@@ -327,6 +332,7 @@ function refreshCharacter(){
   })
 
   updateEquipmentList(characters[selectedCharacter].inventory)
+  displayAbilityChart()
 }
 
 // save selected character to cities api
@@ -343,3 +349,46 @@ async function saveCharacter(){
 // function saveToAvancera(equipment){
 //   cities.post(equipment)
 // }
+function displayAbilityChart(){
+  const data = characters[selectedCharacter].scores
+  console.log(Object.keys(data))
+  if(chart){
+    console.log("chart before")
+    console.log(chart)
+    chart.data.datasets.forEach(ob => {
+      ob.data = Object.values(data)
+    })
+    chart.update();
+  }
+  if(!chart){
+    console.log("no chart before")
+    chart = new Chart(
+      abilityChart,
+      {
+        type: "radar",
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            data: Object.values(data)
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            r: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      }
+    )
+  }
+
+  
+  console.log("test")
+}

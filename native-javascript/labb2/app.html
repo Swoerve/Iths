@@ -36,41 +36,45 @@
     <div class="input-container">
       <label for="class">Class</label>
       <select name="class" id="class">
-
+        
       </select>
       <input type="number" name="level" id="level" value="0">
     </div>
     <div class="input-container">
       <label for="race">Race</label>
       <select name="race" id="race">
-
+        
       </select>
     </div>
     <div class="input-container">
       <!-- <label for="ability-scores">Ability Scores</label> -->
-        <ul name="ability-scores" id="ability-scores">
-
-        </ul>
-    </div>
-    <div class="input-container">
-      <label for="equipment">Equipment</label>
-      <select name="equipment" id="equipment" class="form-select">
-  
-      </select>
-      <button type="button" id="equipment-add">Add</button>
-    </div>
-    <div class="input-container-column">
-      <p style="margin: 0;">Inventory</p>
-      <ul id="equipment-list">
+      <ul name="ability-scores" id="ability-scores">
         
       </ul>
-    </div>
-
-    <input type="submit" value="Save">
-    <input type="button" value="Delete" id="character-delete">
-  </form>
-  <br><br>
-  <script type="module" src="./src/main.js" defer></script>
+      <div style="width: 250px;">
+          <canvas id="ability-chart"></canvas>
+        </div>
+      </div>
+      <div class="input-container">
+        <label for="equipment">Equipment</label>
+        <select name="equipment" id="equipment" class="form-select">
+          
+        </select>
+        <button type="button" id="equipment-add">Add</button>
+      </div>
+      <div class="input-container-column">
+        <p style="margin: 0;">Inventory</p>
+        <ul id="equipment-list">
+          
+        </ul>
+      </div>
+      
+      <input type="submit" value="Save">
+      <input type="button" value="Delete" id="character-delete">
+    </form>
+    <br><br>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="./src/main.js" defer></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
 </body>
 </html>
