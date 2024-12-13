@@ -100,3 +100,7 @@ body {
 #equipment-list {
   width: 100%;
 }
+
+#ability-scores input {
+  width: 2.5rem;
+}

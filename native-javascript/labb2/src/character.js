@@ -5,6 +5,14 @@ export class Character {
   clas = "" // class, cant use class as name so using clas instead
   race = ""
   level = 0
+  scores = {
+    CHA: 0,
+    CON: 0,
+    DEX: 0,
+    INT: 0,
+    STR: 0,
+    WIS: 0
+  }
   inventory = []
 
   constructor(){
@@ -43,6 +51,10 @@ export class Character {
     this.level = newLevel
   }
 
+  setScores(newScores){
+    this.scores = newScores
+  }
+
   /**
    * Adds an item to the inventory at the end
    * @param {object} item
@@ -72,6 +84,7 @@ export class Character {
     char.setClass(object.clas)
     char.setRace(object.race)
     char.setLevel(object.level)
+    char.setScores(object.scores)
     char.inventory = object.inventory
     return char
   }

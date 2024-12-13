@@ -20,6 +20,8 @@ const equipmentList = document.querySelector("#equipment")
 const equipmentAdd = document.querySelector("#equipment-add")
 const equipmentActualList = document.querySelector("#equipment-list")
 
+const abilityScoreList = document.querySelector("#ability-scores")
+
 let user = ""
 
 // TODO make sure the user cant enter an empty username... somehow
@@ -121,6 +123,23 @@ races.forEach(race => {
   opt.value = race.index
   opt.textContent = race.name
   raceList.appendChild(opt)
+})
+
+// load in all the races from dnd api
+let abilityScores = await dnd.getAllAbilities()
+// append equipment api list to visual select in form
+abilityScores.forEach(score => {
+  let li = document.createElement("li")
+  let label = document.createElement("label")
+  label.textContent = score.name
+  let inp = document.createElement("input")
+  inp.type = "number"
+  inp.name = "score-" + score.name
+  inp.id = "score-" + score.name
+  li.appendChild(label)
+  li.appendChild(inp)
+
+  abilityScoreList.appendChild(li)
 })
 
 
@@ -265,6 +284,15 @@ function setCharacter(data){
   characters[selectedCharacter].setClass(data.get("class"))
   characters[selectedCharacter].setRace(data.get("race"))
   characters[selectedCharacter].setLevel(data.get("level"))
+  let newScores = {
+    CHA: data.get("score-CHA"),
+    CON: data.get("score-CON"),
+    DEX: data.get("score-DEX"),
+    INT: data.get("score-INT"),
+    STR: data.get("score-STR"),
+    WIS: data.get("score-WIS")
+  }
+  characters[selectedCharacter].setScores(newScores)
   console.log(characters)
   listCharacters()
 }
@@ -291,6 +319,12 @@ function refreshCharacter(){
   console.log(Boolean(characters[selectedCharacter].race))
   characters[selectedCharacter].race ? Form.race.value = characters[selectedCharacter].race : Form.race.value = "Dragonborn"
   Form.level.value = characters[selectedCharacter].level
+
+  abilityScores.forEach(score => {
+    let inp = document.querySelector("#score-" + score.name)
+    inp.value = characters[selectedCharacter].scores[score.name]
+    //li["score-" + score.name].value = characters[selectedCharacter].scores[score.name]
+  })
 
   updateEquipmentList(characters[selectedCharacter].inventory)
 }
