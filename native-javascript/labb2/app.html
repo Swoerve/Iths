@@ -19,28 +19,31 @@
   <div id="new-character-overlay">
     <div id="new-character-card">
       <form action="" id="new-character-form">
-        <input type="text" name="new-character-name" id="new-character-name">
+        <input type="text" name="new-character-name" id="new-character-name" placeholder="character name">
         <input type="submit" value="Create">
       </form>
     </div>
   </div>
   <button type="button" id="logout">logout</button>
-  <div>
+  <div id="characters-div">
+    <p>Logged in as: </p>
+    <label for="characters">Characters</label>
     <select name="characters" id="characters"></select>
   </div>
   <form id="character-form">
-    <div class="input-container">
+    <div class="input-container-grid">
       <label for="name">Name</label>
       <input class="border-2 border-slate-600" type="text" name="name" id="name" placeholder="Name">
     </div>
-    <div class="input-container">
+    <div class="input-container-grid">
       <label for="class">Class</label>
       <select name="class" id="class">
         
       </select>
+      <label for="level" id="level-label">Level</label>
       <input type="number" name="level" id="level" value="0">
     </div>
-    <div class="input-container">
+    <div class="input-container-grid">
       <label for="race">Race</label>
       <select name="race" id="race">
         
@@ -55,7 +58,7 @@
           <canvas id="ability-chart"></canvas>
         </div>
       </div>
-      <div class="input-container">
+      <div class="input-container-grid">
         <label for="equipment">Equipment</label>
         <select name="equipment" id="equipment" class="form-select">
           

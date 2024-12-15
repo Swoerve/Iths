@@ -1,8 +1,8 @@
 make each user have access to a character list with multiple characters / check
 make it possible to add and remove characters / check
-more additions of things from dnd
+more additions of things from dnd / added 1 more thing
 make a chart for stats/skills
-MAYBE a overlay chart for equipment / spell stats?
+MAYBE a overlay chart for equipment or spells / added chart for ability scores 
 
 
 
@@ -19,7 +19,7 @@ a somewhat big project has to be made representative of 2 weeks of work / uhhhhh
 VG conditions
 make functionality that kan show add and edit "cities" in the cities api, the website should have atleast 1 webform / check
 Use webstorgae to save and remember for later use, this value should not have to do with the cities api / check
-use chartjs
+use chartjs / check
 also for VG all code needs to be coherent and descriptive naming to be used
 
 deliver it in a zip file

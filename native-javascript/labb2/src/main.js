@@ -6,6 +6,7 @@ import { loadFromLoSto } from "./session-storage.js";
 
 
 const logoutButton = document.querySelector("#logout")
+const loggedInText = document.querySelector("#characters-div p")
 
 const Form = document.querySelector("#character-form")
 const charactersList = document.querySelector("#characters")
@@ -34,6 +35,7 @@ if(loadedUser){
   console.log("user in localstorage")
   console.log(loadedUser)
   user = loadedUser
+  loggedInText.textContent = "Logged in as: " + user
 }
 
 if(!user){
@@ -146,8 +148,8 @@ abilityScores.forEach(score => {
 })
 
 
-
-// if the user is logged in (which they should be?)
+// if the user is logged in load its characters else if there arent any 
+// already saved characters, put user in creation of a new one
 if(user){
   // check if the user has saved characters in cities
   let alreadySaved = await cities.get(user)
@@ -170,7 +172,10 @@ if(user){
   listCharacters()
 }
 
-// updates the visual inventory list
+/**
+ * updates the visual inventory list
+ * @param {*} list 
+ */
 function updateEquipmentList(list){
   utils.removeChildren(equipmentActualList)
 
@@ -190,7 +195,9 @@ function updateEquipmentList(list){
   })
 }
 
-// lists out the characters in the character selector
+/**
+ * lists out the characters in the character selector
+ */
 function listCharacters(){
   utils.removeChildren(charactersList)
   console.log("listing")
@@ -212,6 +219,9 @@ function listCharacters(){
 
 // switches the character by getting the characters index from its id,
 // which solves the problem of having characters with the same name?
+/**
+ * switches the character by getting the characters index from its id
+ */
 async function switchCharacter(){
   console.log("switch start")
   console.log(charactersList.value)
@@ -233,6 +243,9 @@ async function switchCharacter(){
   console.log("selected: " + selectedCharacter)
 }
 
+/**
+ * creates a new promise where we wait until the user has pressed the button to create a character
+ */
 async function waitTillCharacterCreated(){
   console.log("starting character creation")
   await new Promise((resolve) => {
@@ -244,6 +257,7 @@ async function waitTillCharacterCreated(){
       let character = new Character()
       character.setName(data.get("new-character-name"))
       character.setClass("barbarian")
+      character.setRace("dragonborn")
       console.log(character)
       characters.push(character)
       console.log("adding character1")
@@ -261,9 +275,9 @@ async function waitTillCharacterCreated(){
   })
 }
 
-// !empty function?
-
-
+/**
+ * deletes a character from the character list and cities if its saved
+ */
 function deleteChar(){
   console.log("deleting")
   cities.del(user, characters[selectedCharacter].id)
@@ -282,6 +296,10 @@ function deleteChar(){
   console.log("Selected: " + selectedCharacter)
 }
 
+/**
+ * basically saves all form data into the character
+ * @param {*} data 
+ */
 function setCharacter(data){
   console.log("setting")
   characters[selectedCharacter].setName(data.get("name"))
@@ -302,7 +320,10 @@ function setCharacter(data){
   listCharacters()
 }
 
-// load the oldcharacters into the characters list
+/**
+ * load the oldcharacters into the characters list
+ * @param {*} oldCharacters 
+ */
 async function loadCharacters(oldCharacters){
   console.log("loading")
   oldCharacters.forEach((character) => {
@@ -313,16 +334,18 @@ async function loadCharacters(oldCharacters){
   console.log(characters)
 }
 
-// visually refreshes the forms data with the sent in char
+/**
+ * visually refreshes the forms data with the sent in char
+ */
 function refreshCharacter(){
   console.log("Refreshing")
   //console.log(characters[selectedCharacter])
   Form.name.value = characters[selectedCharacter].name
 
-  characters[selectedCharacter].clas ? Form.class.value = characters[selectedCharacter].clas : Form.class.value = "Barbarian"
+  characters[selectedCharacter].clas ? Form.class.value = characters[selectedCharacter].clas : Form.class.value = "barbarian"
   console.log(characters[selectedCharacter].race)
   console.log(Boolean(characters[selectedCharacter].race))
-  characters[selectedCharacter].race ? Form.race.value = characters[selectedCharacter].race : Form.race.value = "Dragonborn"
+  characters[selectedCharacter].race ? Form.race.value = characters[selectedCharacter].race : Form.race.value = "dragonborn"
   Form.level.value = characters[selectedCharacter].level
 
   abilityScores.forEach(score => {
@@ -335,8 +358,11 @@ function refreshCharacter(){
   displayAbilityChart()
 }
 
-// save selected character to cities api
-// ! doesnt save all characters
+
+// ! doesnt save all characters, should it?
+/**
+ * save selected character to cities api
+ */
 async function saveCharacter(){
   //characters[selectedCharacter].setName(data.get("name"))
   //characters[selectedCharacter].setClass(data.get("class"))
@@ -346,9 +372,9 @@ async function saveCharacter(){
   cities.post(characters[selectedCharacter], user)
 }
 
-// function saveToAvancera(equipment){
-//   cities.post(equipment)
-// }
+/**
+ * 
+ */
 function displayAbilityChart(){
   const data = characters[selectedCharacter].scores
   console.log(Object.keys(data))
@@ -388,7 +414,5 @@ function displayAbilityChart(){
       }
     )
   }
-
-  
   console.log("test")
 }

@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  align-content: center;
+}
+
+#login-form {
+  width: 30rem;
+  padding: 1rem;
+  margin: auto;
+  background-color: black;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border-radius: .25rem;
+}
+
+#login-form #username {
+  grid-column: 1/4;
+}
+
+#login-form #submit {
+  grid-column: 2;
+  grid-row: 2;
+}
