@@ -46,7 +46,6 @@ export async function getAllClasses(){
   .then((response) => response.json())
   .then((result) => result.results)
   .catch((error) => console.error(error))
-  console.log("classes loaded")
   return classes
 }
 

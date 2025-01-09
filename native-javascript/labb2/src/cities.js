@@ -14,7 +14,7 @@ export async function post(data, user){
     patch(data, user, check)
   }else{
     console.log("posting")
-    console.log(`data ${data}`)
+    //console.log(`data ${data}`)
     console.log("saving to cities with new save")
     let bin = JSON.stringify(data)
     console.log(bin)
@@ -47,18 +47,16 @@ export async function get(user = "0"){
     .then(response => response.json())
     .then(res => res)
     .catch(err => console.log(err))
-  console.log("logging")
-  console.log(result)
+  console.log("fetching cities")
+ 
   let data = []
   result.forEach(item => {
     item = item.name.split("|")[2]
-    console.log("splitting")
-    console.log(item)
     item = binaryToString(item)
     item = JSON.parse(item)
     data.push(item)
   })
-  console.log(data)
+
   // if(Array.isArray(data)){
   //   data = null
   // } else
@@ -72,6 +70,7 @@ export async function get(user = "0"){
  * @returns {Promise<number>} an id number of the cities id of the specific data of user
  */
 export async function getID(id, user){
+  console.log("fetching cities id")
   let result = await fetch(`https://avancera.app/cities/?name=CreatorApp${user}|${id}|`, {
   headers: {
     'Content-Type': 'application/json'
@@ -80,8 +79,6 @@ export async function getID(id, user){
     .then(response => response.json())
     .then(res => res)
     .catch(err => console.log(err))
-    console.log("id Result")
-    console.log(result)
   if(result.length > 0){
     return result[0].id
   } else {
@@ -97,11 +94,11 @@ export async function getID(id, user){
  */
 async function patch(data, user, id){
   console.log("patching to cities")
-  console.log(data)
+
   let bin = JSON.stringify(data)
-  console.log(bin)
+
   let binData = `CreatorApp${user}|${data.id}|` + stringToBinary(bin)
-  console.log(binData)
+
   fetch(`https://avancera.app/cities/${id}`, {
   body: `{ "name": "${binData}", "population": 5555 }`,
   headers: {
@@ -117,8 +114,8 @@ async function patch(data, user, id){
 
 export async function del(user, id){
   let cID = await getID(id, user)
-  console.log("cid")
-  console.log(cID)
+  console.log("deleting from cities")
+
   if(cID && cID.length > 0){
     fetch(`https://avancera.app/cities/${cID}`, {
       headers: {

@@ -2,6 +2,8 @@
 export class Character {
   id = 0
   name = ""
+  health = 20
+  armor = 10
   clas = "" // class, cant use class as name so using clas instead
   race = ""
   level = 0
@@ -51,6 +53,26 @@ export class Character {
     this.level = newLevel
   }
 
+  /**
+   * Sets the health of the character
+   * @param {number} newHealth
+   */
+  setHealth(newHealth){
+    this.health = newHealth
+  }
+
+  /**
+   * Sets the armor of the character
+   * @param {number} newArmor
+   */
+  setArmor(newArmor){
+    this.armor = newArmor
+  }
+
+  /**
+   * Sets the scores of the character
+   * @param {*} newScores
+   */
   setScores(newScores){
     this.scores = newScores
   }
@@ -81,6 +103,8 @@ export class Character {
     let char = new Character()
     char.id = object.id
     char.setName(object.name)
+    char.setHealth(object.health)
+    char.setArmor(object.armor)
     char.setClass(object.clas)
     char.setRace(object.race)
     char.setLevel(object.level)

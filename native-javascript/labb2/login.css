@@ -15,7 +15,7 @@ body {
   width: 30rem;
   padding: 1rem;
   margin: auto;
-  background-color: black;
+
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -27,6 +27,7 @@ body {
 }
 
 #login-form #submit {
+  margin-top: 1rem;
   grid-column: 2;
   grid-row: 2;
 }

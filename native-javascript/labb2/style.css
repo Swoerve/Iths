@@ -126,6 +126,18 @@ body {
   gap: 0.5rem;
 }
 
+#health {
+  grid-column: 2/4;
+}
+
+#armor-label {
+  grid-column: 4/5;
+}
+
+#armor {
+  grid-column: 5/7;
+}
+
 #class {
   grid-column: 2/4;
 }

@@ -4,7 +4,6 @@ import * as dnd from "./api/equipment.js";
 import * as utils from "./utils.js"
 import { loadFromLoSto } from "./session-storage.js";
 
-
 const logoutButton = document.querySelector("#logout")
 const loggedInText = document.querySelector("#characters-div p")
 
@@ -24,38 +23,22 @@ const equipmentActualList = document.querySelector("#equipment-list")
 
 const abilityScoreList = document.querySelector("#ability-scores")
 const abilityChart = document.querySelector("#ability-chart")
+
 let chart = null
 
 let user = ""
 
-// TODO make sure the user cant enter an empty username... somehow
+
 // if no user is logged in then ask to login with a simple username
 let loadedUser = loadFromLoSto("user")
 if(loadedUser){
   console.log("user in localstorage")
-  console.log(loadedUser)
   user = loadedUser
   loggedInText.textContent = "Logged in as: " + user
 }
 
 if(!user){
   utils.movePage("index.html")
-  // document.getElementById("overlay").style.display = "block"
-  // let userForm = document.querySelector("#user-form")
-  // async function waitTillSignedIn(){
-  //   await new Promise((resolve) => {
-  //     userForm.addEventListener("submit", (e) => {
-  //       e.preventDefault()
-  //       let data = new FormData(userForm)
-  //       user = data.get("user")
-  //       console.log(`${user} signed in`)
-  //       document.getElementById("overlay").style.display = "none"
-  //       resolve()
-  //     })
-  //   })
-  // }
-  // await waitTillSignedIn() // this is used to stop the rest of the site to keep loading until we have a user
-  // saveToLoSto("user", user)
 }
 
 logoutButton.addEventListener("click", (e) => {
@@ -66,9 +49,9 @@ logoutButton.addEventListener("click", (e) => {
 // eventlistener for adding equipment
 equipmentAdd.addEventListener("click", async(e) => {
   let item = equipmentList.value
-  console.log("before")
+
   let equipment = await dnd.getSpecificEquipment(item)
-  console.log("after")
+  
   characters[selectedCharacter].addItem(equipment)
   updateEquipmentList(characters[selectedCharacter].inventory)
 })
@@ -89,7 +72,6 @@ let selectedCharacter = 0
 
 // eventlistener for the characters list, if we change then switch character
 charactersList.addEventListener("change", async (e) => {
-  console.log("charList Change")
   await switchCharacter()
 })
 
@@ -156,8 +138,8 @@ if(user){
   console.log(alreadySaved)
   if(alreadySaved.length > 0){
     // if they do then load them in
-    console.log("character exists saved")
-    console.log(alreadySaved)
+    console.log("characters exist in cities")
+    //console.log(alreadySaved)
     loadCharacters(alreadySaved)
     
   } else {
@@ -166,8 +148,6 @@ if(user){
     listCharacters()
     charactersList.value = "new"
     await switchCharacter()
-    console.log("hmmm")
-
   }
   listCharacters()
 }
@@ -201,7 +181,7 @@ function updateEquipmentList(list){
 function listCharacters(){
   utils.removeChildren(charactersList)
   console.log("listing")
-  console.log(characters)
+  //console.log(characters)
   if(characters.length > 0){
     characters.forEach(char => {
       let opt = document.createElement("option")
@@ -224,15 +204,15 @@ function listCharacters(){
  */
 async function switchCharacter(){
   console.log("switch start")
-  console.log(charactersList.value)
+  //console.log(charactersList.value)
   if(charactersList.value === "new"){ // if we choose the "new", option then initiate a new character creation
-    console.log("Adding character")
+    //console.log("Adding character")
     newCharacterOverlay.style.display = "block"
     await waitTillCharacterCreated()
-    console.log("creation done")
+    //console.log("creation done")
     switchCharacter()
   } else{
-    console.log("Switching characters")
+    //console.log("Switching characters")
     let id = +charactersList.value
     let index = characters.findIndex((char) => {
       return char.id === id
@@ -240,7 +220,7 @@ async function switchCharacter(){
     selectedCharacter = index
     refreshCharacter(characters[selectedCharacter])
   }
-  console.log("selected: " + selectedCharacter)
+  //console.log("selected: " + selectedCharacter)
 }
 
 /**
@@ -249,8 +229,8 @@ async function switchCharacter(){
 async function waitTillCharacterCreated(){
   console.log("starting character creation")
   await new Promise((resolve) => {
-    console.log("promise made")
-    console.log(this)
+    //console.log("promise made")
+    //console.log(this)
     function addCharacter(event){
       event.preventDefault()
       let data = new FormData(newCharacterForm)
@@ -258,17 +238,17 @@ async function waitTillCharacterCreated(){
       character.setName(data.get("new-character-name"))
       character.setClass("barbarian")
       character.setRace("dragonborn")
-      console.log(character)
+      //console.log(character)
       characters.push(character)
-      console.log("adding character1")
-      console.log(JSON.stringify(characters))
+      //console.log("adding character1")
+      //console.log(JSON.stringify(characters))
       listCharacters()
       charactersList.value = character.id
-      console.log("list Value: " + charactersList.value)
+      //console.log("list Value: " + charactersList.value)
       
       newCharacterOverlay.style.display = "none"
       resolve()
-      console.log("resolved")
+      //console.log("resolved")
       newCharacterForm.removeEventListener("submit", addCharacter)
     }
     newCharacterForm.addEventListener("submit", addCharacter)
@@ -278,22 +258,28 @@ async function waitTillCharacterCreated(){
 /**
  * deletes a character from the character list and cities if its saved
  */
-function deleteChar(){
+async function deleteChar(){
   console.log("deleting")
-  cities.del(user, characters[selectedCharacter].id)
+  let check = await cities.getID(characters[selectedCharacter].id, user)
+  if(check && check.length > 0){
+    cities.del(user, characters[selectedCharacter].id)
+  }
   characters.splice(selectedCharacter, 1)
   selectedCharacter = selectedCharacter - 1
   if(selectedCharacter < 0) { selectedCharacter = 0 }
   if(characters.length === 0){
-    console.log("no characters left")
+    //console.log("no characters left")
     charactersList.value = "new"
-    console.log(charactersList.value)
+    //console.log(charactersList.value) 
+    listCharacters()
+    switchCharacter()
+    return
   }
-  console.log("Selected: " + selectedCharacter)
+  //console.log("Selected: " + selectedCharacter)
   charactersList.value = characters[selectedCharacter].id
-  switchCharacter()
   listCharacters()
-  console.log("Selected: " + selectedCharacter)
+  switchCharacter()
+  //console.log("Selected: " + selectedCharacter)
 }
 
 /**
@@ -303,6 +289,8 @@ function deleteChar(){
 function setCharacter(data){
   console.log("setting")
   characters[selectedCharacter].setName(data.get("name"))
+  characters[selectedCharacter].setHealth(data.get("health"))
+  characters[selectedCharacter].setArmor(data.get("armor"))
   characters[selectedCharacter].setClass(data.get("class"))
   characters[selectedCharacter].setRace(data.get("race"))
   characters[selectedCharacter].setLevel(data.get("level"))
@@ -341,10 +329,12 @@ function refreshCharacter(){
   console.log("Refreshing")
   //console.log(characters[selectedCharacter])
   Form.name.value = characters[selectedCharacter].name
+  Form.health.value = characters[selectedCharacter].health
+  Form.armor.value = characters[selectedCharacter].armor
 
   characters[selectedCharacter].clas ? Form.class.value = characters[selectedCharacter].clas : Form.class.value = "barbarian"
-  console.log(characters[selectedCharacter].race)
-  console.log(Boolean(characters[selectedCharacter].race))
+  //console.log(characters[selectedCharacter].race)
+  //console.log(Boolean(characters[selectedCharacter].race))
   characters[selectedCharacter].race ? Form.race.value = characters[selectedCharacter].race : Form.race.value = "dragonborn"
   Form.level.value = characters[selectedCharacter].level
 
@@ -364,11 +354,12 @@ function refreshCharacter(){
  * save selected character to cities api
  */
 async function saveCharacter(){
+  console.log("saving")
   //characters[selectedCharacter].setName(data.get("name"))
   //characters[selectedCharacter].setClass(data.get("class"))
   //characters[selectedCharacter].setLevel(data.get("level"))
 
-  console.log(characters[selectedCharacter])
+  //console.log(characters[selectedCharacter])
   cities.post(characters[selectedCharacter], user)
 }
 
@@ -377,17 +368,17 @@ async function saveCharacter(){
  */
 function displayAbilityChart(){
   const data = characters[selectedCharacter].scores
-  console.log(Object.keys(data))
+  //console.log(Object.keys(data))
   if(chart){
-    console.log("chart before")
-    console.log(chart)
+    //console.log("chart before")
+    //console.log(chart)
     chart.data.datasets.forEach(ob => {
       ob.data = Object.values(data)
     })
     chart.update();
   }
   if(!chart){
-    console.log("no chart before")
+    //console.log("no chart before")
     chart = new Chart(
       abilityChart,
       {
@@ -414,5 +405,4 @@ function displayAbilityChart(){
       }
     )
   }
-  console.log("test")
 }
