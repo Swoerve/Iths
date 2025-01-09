@@ -1,0 +1,49 @@
+
+<!-- This is for the previous assignment, hence why its commented out!!! -->
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue</title>
+</head>
+
+<body>
+  <div id="app">
+    <div v-for="question in questions">
+      <h2>{{question.question}}</h2>
+      <ul>
+        <li v-for="answer in question.incorrect_answers">
+          <p>{{answer}}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@3"></script>
+  <script>
+    Vue.createApp({
+      created() {
+        fetch("https://opentdb.com/api.php?amount=10")
+          .then((response) => {
+            console.log(response)
+            //console.log(response.json())
+            return response.json()
+          })
+          .then((result) => {
+            console.log(result)
+            this.questions = result.results
+          })
+      },
+      data() {
+        return {
+          questions: []
+        }
+      }
+    }).mount("#app")
+  </script>
+</body>
+
+</html> 
+-->
